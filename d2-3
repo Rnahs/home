@@ -1,0 +1,30 @@
+#1. pandas 사용
+#2. openpyxl 사용
+
+import requests
+from bs4 import BeautifulSoup as bs
+from openpyxl import Workbook
+def main():
+    url = 'http://www.newsis.com/realnews/'
+    html = requests.get(url)
+    #print(html.text)
+    soup = bs(html.text,'html.parser')
+    #print(soup)
+    articles=[]
+    
+    for i in soup.find_all('p',{'class':'tit'}):
+        #print(i.get_text())
+        articles.append(i.get_text())#append는 추가하다
+        #배열에 추가한거임
+    print(articles)
+    #엑셀만들고추가하자.
+    wb = Workbook()
+    sheet1 = wb.active
+    file_name = '10202YJH.xlsx'
+    
+    for i in range(0,len(articles)):
+        sheet1.cell(row = i+1, column=1).value = i+1#행번호표시
+        sheet1.cell(row = i+1, column=2).value = articles[i]#데이터삽입
+    wb.save(filename=file_name)
+if __name__=='__main__':
+    main()
